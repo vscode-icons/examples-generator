@@ -1,0 +1,34 @@
+{
+    "name": "examples-generator",
+    "displayName": "Examples Generator",
+    "description": "A custom generator tool to produce icons examples for vscode-icons",
+    "version": "0.0.1",
+    "publisher": "vscode-icons",
+    "license": "MIT",
+    "author": {
+        "email": "jimikar@gmail.com",
+        "name": "Jimi (Dimitris) Charalampidis"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/vscode-icons/wpilgenerator"
+    },
+    "bugs": {
+        "url": "https://github.com/vscode-icons/wpilgenerator/issues"
+    },
+    "main": "./out/src/",
+    "scripts": {
+        "precompile": "rimraf ./out",
+        "compile": "tsc",
+        "compile:w": "npm run compile -- -w",
+        "lint": "tslint --project tsconfig.json",
+        "preexamples": "npm run lint && npm run compile",
+        "examples": "node ./out/src/examples"
+    },
+    "devDependencies": {
+        "@types/node": "^8.0.47",
+        "rimraf": "^2.6.2",
+        "tslint": "^5.8.0",
+        "typescript": "^2.6.1"
+    }
+}
