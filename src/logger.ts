@@ -17,6 +17,10 @@ export class Logger {
   }
 
   public updateLog(message: string, line?: number): void {
+    if (!process.stdout.isTTY) {
+      process.stdout.write(`${message}\n`);
+      return;
+    }
     if (!line) { line = 1; }
     readline.moveCursor(process.stdout, 0, -line);
     readline.clearLine(process.stdout, 0);
@@ -37,6 +41,7 @@ export class Logger {
   }
 
   private spin(message: string, groupId?: string, line?: number): NodeJS.Timer {
+    if (!process.stdout.isTTY) { return; }
     let i = 0;
     return setInterval(() => {
       this.cursorHide();

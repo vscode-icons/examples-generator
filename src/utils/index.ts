@@ -18,3 +18,40 @@ export function deleteDirectoryRecursively(dirPath: string): void {
     fs.rmdirSync(dirPath);
   }
 }
+
+export function findDirectorySync(dirName: string): string {
+  let dir = path.resolve();
+  const root = path.parse(dir).root;
+  while (true) {
+    let lookUpDir: string;
+    try {
+      fs.accessSync(path.resolve(dir, dirName));
+      lookUpDir = dirName;
+    } catch (err) {
+      lookUpDir = undefined;
+    }
+    if (lookUpDir) {
+      return path.join(dir, lookUpDir);
+    } else if (dir === root) {
+      return null;
+    }
+    dir = path.dirname(dir);
+  }
+}
+
+export function findFileSync(filePath: string | RegExp, rootPath?: string, results?: string[]): string[] {
+  if (!!!rootPath) { rootPath = path.resolve(); }
+  if (!!!results) { results = []; }
+  const files = fs.readdirSync(rootPath);
+  for (const file of files) {
+    const filename = path.join(rootPath, file);
+    const stat = fs.lstatSync(filename);
+    if (stat.isDirectory()) { findFileSync(filePath, filename, results); }
+    if (filePath instanceof RegExp) {
+      if (filePath.test(filename)) { results.push(filename); }
+      continue;
+    }
+    if (filename.indexOf(filePath) > -1) { results.push(filename); }
+  }
+  return results;
+}

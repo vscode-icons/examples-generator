@@ -6,12 +6,12 @@
     "noUnusedParameters": true,
     "skipLibCheck": true,
     "target": "es6",
-    "outDir": "out",
+    "outDir": "lib",
     "lib": [
       "es6"
     ],
     "sourceMap": true,
-    "rootDir": "."
+    "rootDir": "./src"
   },
   "include": [
     "src/**/*.ts"

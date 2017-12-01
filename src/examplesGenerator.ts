@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import { Logger } from './logger';
 import { IParsedArgs } from './interfaces';
-import { deleteDirectoryRecursively, pathUnixJoin } from './utils';
+import { deleteDirectoryRecursively } from './utils';
 
 export class ExamplesGenerator {
 
@@ -17,25 +17,17 @@ export class ExamplesGenerator {
 
   public generate(): void {
     const currentDir = process.cwd();
-    const rootDir = fs.existsSync('../../submodules')
-      ? '../../'
-      : process.cwd();
-    this.createDirectory(pathUnixJoin(rootDir, 'examples'));
+    this.createDirectory('examples');
+    this.logger.log('');
 
     if (this.pargs.flag === 'files') {
-      if (!!!this.pargs.icons.length) {
-        this.buildFiles(Object.keys(this.fileNames));
-      } else {
-        this.buildFiles(this.pargs.icons);
-      }
+      const icons = !!this.pargs.icons.length ? this.pargs.icons : Object.keys(this.fileNames);
+      this.buildFiles(icons);
     }
 
     if (this.pargs.flag === 'folders') {
-      if (!!!this.pargs.icons.length) {
-        this.buildFolders(Object.keys(this.folderNames));
-      } else {
-        this.buildFolders(this.pargs.icons);
-      }
+      const icons = !!this.pargs.icons.length ? this.pargs.icons : Object.keys(this.folderNames);
+      this.buildFolders(icons);
     }
 
     if (this.pargs.flag === 'all') {
@@ -43,6 +35,12 @@ export class ExamplesGenerator {
       this.buildFiles(Object.keys(this.fileNames));
     }
 
+    this.displayNoteFooter();
+
+    process.chdir(currentDir);
+  }
+
+  private displayNoteFooter() {
     const supported = this.pargs.icons.filter(icon => this.unsupported.indexOf(icon) < 0);
     let isMany = !!!supported.length || supported.length > 1;
     let suffix = isMany ? 's' : '';
@@ -55,15 +53,12 @@ export class ExamplesGenerator {
         ? `'${supported.join('\', \'')}'`
         : `zero`)} ${noun}`
       : noun;
-
     this.logger.updateLog(`Example${suffix} of ${msg} icon${suffix} ${verb} successfully created!`);
-
     if (!!this.unsupported.length) {
       isMany = !!!this.unsupported.length || this.unsupported.length > 1;
       suffix = isMany ? 's' : '';
       this.logger.error(`Unsupported icon${suffix}: '${this.unsupported.join('\', \'')}'`);
     }
-
     if (this.langIdIconsCount > 0) {
       isMany = this.langIdIconsCount > 1;
       suffix = isMany ? 's' : '';
@@ -79,12 +74,10 @@ Note: Example${suffix} include${!isMany ? 's' : ''} file icon${suffix} that ${ve
   replacing the placeholders accordingly. For more than one icon, add their respective entries in the array.`;
       this.logger.log(langIdMsg);
     }
-
-    process.chdir(currentDir);
   }
 
   private getFilesCollection(): any {
-    return this.files.extensions.supported
+    return this.files.supported
       .filter(file => !!!file.disabled)
       .reduce((init, current) => {
         const obj = init;
@@ -104,7 +97,7 @@ Note: Example${suffix} include${!isMany ? 's' : ''} file icon${suffix} that ${ve
   }
 
   private getFoldersCollection(): any {
-    return this.folders.extensions.supported
+    return this.folders.supported
       .filter(folder => !!!folder.disabled)
       .reduce((init, current) => {
         const obj = init;
@@ -130,7 +123,7 @@ Note: Example${suffix} include${!isMany ? 's' : ''} file icon${suffix} that ${ve
         return;
       }
 
-      const fileIcon = this.files.extensions.supported.find(file => file.icon === icon);
+      const fileIcon = this.files.supported.find(file => file.icon === icon);
       if (!!fileIcon.languages && !!fileIcon.languages.length) {
         this.langIdIconsCount++;
       }

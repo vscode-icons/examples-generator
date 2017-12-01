@@ -16,19 +16,27 @@
     "bugs": {
         "url": "https://github.com/vscode-icons/wpilgenerator/issues"
     },
-    "main": "./out/src/",
+    "main": "./lib/examples",
+    "bin": {
+        "example": "./bin/example"
+    },
     "scripts": {
-        "precompile": "rimraf ./out",
+        "postinstall": "npm run compile",
+        "precompile": "rimraf ./lib",
         "compile": "tsc",
         "compile:w": "npm run compile -- -w",
         "lint": "tslint --project tsconfig.json",
-        "preexamples": "npm run lint && npm run compile",
-        "examples": "node ./out/src/examples"
+        "preexample": "npm run lint && npm run compile",
+        "example": "node ./bin/example"
+    },
+    "dependencies": {
+        "yargs": "^10.0.3"
     },
     "devDependencies": {
-        "@types/node": "^8.0.47",
+        "@types/node": "^8.0.53",
+        "@types/yargs": "^8.0.2",
         "rimraf": "^2.6.2",
         "tslint": "^5.8.0",
-        "typescript": "^2.6.1"
+        "typescript": "^2.6.2"
     }
 }
