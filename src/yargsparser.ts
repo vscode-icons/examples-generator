@@ -1,4 +1,4 @@
-import * as y from 'yargs';
+import y = require('yargs');
 import { Logger } from './logger';
 import { IParsedArgs } from './interfaces';
 
