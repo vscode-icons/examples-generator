@@ -55,7 +55,7 @@ restricts the examples generator to that icons only`;
     this.confict(pargs, this.optionKeys[0], this.optionKeys[1]);
     this.confict(pargs, this.optionKeys[1], this.optionKeys[2]);
     this.confict(pargs, this.optionKeys[2], this.optionKeys[0]);
-    if (pargs.all && !!pargs._.length) {
+    if (pargs.all && pargs._.length) {
       this.logger.log(`Arguments after \'--all\' have been ignored\n`);
     }
     return true;

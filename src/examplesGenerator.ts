@@ -21,12 +21,12 @@ export class ExamplesGenerator {
     this.logger.log('');
 
     if (this.pargs.flag === 'files') {
-      const icons = !!this.pargs.icons.length ? this.pargs.icons : Object.keys(this.fileNames);
+      const icons = this.pargs.icons.length ? this.pargs.icons : Object.keys(this.fileNames);
       this.buildFiles(icons);
     }
 
     if (this.pargs.flag === 'folders') {
-      const icons = !!this.pargs.icons.length ? this.pargs.icons : Object.keys(this.folderNames);
+      const icons = this.pargs.icons.length ? this.pargs.icons : Object.keys(this.folderNames);
       this.buildFolders(icons);
     }
 
@@ -42,20 +42,20 @@ export class ExamplesGenerator {
 
   private displayNoteFooter() {
     const supported = this.pargs.icons.filter(icon => this.unsupported.indexOf(icon) < 0);
-    let isMany = !!!supported.length || supported.length > 1;
+    let isMany = !supported.length || supported.length > 1;
     let suffix = isMany ? 's' : '';
     const noun = this.pargs.flag !== 'all'
       ? this.pargs.flag.substring(0, this.pargs.flag.length - 1)
       : this.pargs.flag;
     let verb = isMany ? 'were' : 'was';
     const msg = this.pargs.icons.length
-      ? `${(!!supported.length
+      ? `${(supported.length
         ? `'${supported.join('\', \'')}'`
         : `zero`)} ${noun}`
       : noun;
     this.logger.updateLog(`Example${suffix} of ${msg} icon${suffix} ${verb} successfully created!`);
-    if (!!this.unsupported.length) {
-      isMany = !!!this.unsupported.length || this.unsupported.length > 1;
+    if (this.unsupported.length) {
+      isMany = !this.unsupported.length || this.unsupported.length > 1;
       suffix = isMany ? 's' : '';
       this.logger.error(`Unsupported icon${suffix}: '${this.unsupported.join('\', \'')}'`);
     }
@@ -78,15 +78,15 @@ Note: Example${suffix} include${!isMany ? 's' : ''} file icon${suffix} that ${ve
 
   private getFilesCollection(): any {
     return this.files.supported
-      .filter(file => !!!file.disabled)
+      .filter(file => !file.disabled)
       .reduce((init, current) => {
         const obj = init;
-        const hasLangId = !!!current.filename && !!current.languages && !!current.languages.length;
+        const hasLangId = !current.filename && current.languages && current.languages.length;
         const extension = hasLangId
           ? current.languages[0].defaultExtension
           : current.extensions[0];
 
-        if (!!!extension) {
+        if (!extension) {
           return obj;
         }
 
@@ -98,7 +98,7 @@ Note: Example${suffix} include${!isMany ? 's' : ''} file icon${suffix} that ${ve
 
   private getFoldersCollection(): any {
     return this.folders.supported
-      .filter(folder => !!!folder.disabled)
+      .filter(folder => !folder.disabled)
       .reduce((init, current) => {
         const obj = init;
         if (current.extensions.length) {
@@ -118,13 +118,13 @@ Note: Example${suffix} include${!isMany ? 's' : ''} file icon${suffix} that ${ve
     icons.forEach(icon => {
       const filename = this.fileNames[icon];
 
-      if (!!!filename) {
+      if (!filename) {
         this.unsupported.push(icon);
         return;
       }
 
       const fileIcon = this.files.supported.find(file => file.icon === icon);
-      if (!!fileIcon.languages && !!fileIcon.languages.length) {
+      if (fileIcon.languages && fileIcon.languages.length) {
         this.langIdIconsCount++;
       }
 
@@ -141,7 +141,7 @@ Note: Example${suffix} include${!isMany ? 's' : ''} file icon${suffix} that ${ve
     icons.forEach(icon => {
       const foldername = this.folderNames[icon];
 
-      if (!!!foldername) {
+      if (!foldername) {
         this.unsupported.push(icon);
         return;
       }
