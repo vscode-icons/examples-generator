@@ -11,8 +11,10 @@ export function main(): void {
   const rootDir = findDirectorySync('vscode-icons');
 
   // Find files and folders path
-  const filesPath = findFileSync(new RegExp('src/.*/supportedExtensions.js', 'g'), rootDir)[0];
-  const foldersPath = findFileSync(new RegExp('src/.*/supportedFolders.js', 'g'), rootDir)[0];
+  const filesPath = findFileSync(/src((\/|\\)[a-z0-9\s_@\-^!#$%&+={}\[\]]+)*(\/|\\)supportedExtensions\.js/,
+    rootDir)[0];
+  const foldersPath = findFileSync(/src((\/|\\)[a-z0-9\s_@\-^!#$%&+={}\[\]]+)*(\/|\\)supportedFolders\.js/,
+    rootDir)[0];
   const files = require(filesPath).extensions;
   const folders = require(foldersPath).extensions;
 
