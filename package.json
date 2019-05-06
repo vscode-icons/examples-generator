@@ -2,7 +2,7 @@
     "name": "examples-generator",
     "displayName": "Examples Generator",
     "description": "A custom generator tool to produce icons examples for vscode-icons",
-    "version": "0.2.2",
+    "version": "0.3.0",
     "publisher": "vscode-icons-team",
     "license": "MIT",
     "author": {
