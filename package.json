@@ -3,7 +3,7 @@
     "displayName": "Examples Generator",
     "description": "A custom generator tool to produce icons examples for vscode-icons",
     "version": "0.2.2",
-    "publisher": "vscode-icons",
+    "publisher": "vscode-icons-team",
     "license": "MIT",
     "author": {
         "email": "jimikar@gmail.com",
@@ -15,6 +15,9 @@
     },
     "bugs": {
         "url": "https://github.com/vscode-icons/wpilgenerator/issues"
+    },
+    "engines": {
+        "node": "8.* || >=10.*"
     },
     "main": "./lib/examples",
     "bin": {
@@ -30,13 +33,13 @@
         "example": "node ./bin/example"
     },
     "dependencies": {
-        "yargs": "~11.0.0"
+        "yargs": "~13.2.2"
     },
     "devDependencies": {
-        "@types/node": "7",
-        "@types/yargs": "~11.0.0",
-        "rimraf": "^2.6.2",
-        "tslint": "^5.10.0",
-        "typescript": "^2.8.3"
+        "@types/node": "8",
+        "@types/yargs": "~13.0.0",
+        "rimraf": "^2.6.3",
+        "tslint": "^5.16.0",
+        "typescript": "^3.4.5"
     }
 }
