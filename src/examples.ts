@@ -13,8 +13,8 @@ export function main(): void {
 
     if (!rootDir) {
       throw Error(
-        `Directory 'vscode-icons' could not be found.\n` +
-          `Try cloning the 'vscode-icons' repository first, in the parent directory.`,
+        `Directory 'vscode-icons' could not be found, ` +
+          `try cloning the repository first, in the parent directory.`,
       );
     }
 
@@ -32,8 +32,8 @@ export function main(): void {
 
     if (!filesPath || !foldersPath) {
       throw Error(
-        `Looks like 'vscode-icons' has not been build yet.\n` +
-          `Try performing a build of 'vscode-icons' first.`,
+        `Looks like 'vscode-icons' has not been build yet, ` +
+          `try performing a build first.`,
       );
     }
 
@@ -43,5 +43,6 @@ export function main(): void {
     new ExamplesGenerator(pargs, files, folders, logger).generate();
   } catch (error) {
     console.error(error.message || error);
+    process.exit(1);
   }
 }
