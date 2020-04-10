@@ -1,8 +1,8 @@
 import * as fs from 'fs';
-import * as path from 'path';
+import { dirname, join, parse, posix, resolve } from 'path';
 
 export function pathUnixJoin(...paths: string[]): string {
-  return path.posix.join(...paths);
+  return posix.join(...paths);
 }
 
 export function deleteDirectoryRecursively(dirPath: string): void {
@@ -22,25 +22,25 @@ export function deleteDirectoryRecursively(dirPath: string): void {
 }
 
 export function findDirectorySync(dirName: string): string {
-  let dir = path.resolve();
-  const root = path.parse(dir).root;
+  let dir = resolve();
+  const root = parse(dir).root;
   let loop = true;
   while (loop) {
     let lookUpDir: string;
     try {
-      fs.accessSync(path.resolve(dir, dirName));
+      fs.accessSync(resolve(dir, dirName));
       lookUpDir = dirName;
     } catch (err) {
       lookUpDir = undefined;
     }
     if (lookUpDir) {
       loop = false;
-      return path.join(dir, lookUpDir);
+      return join(dir, lookUpDir);
     } else if (dir === root) {
       loop = false;
       return null;
     }
-    dir = path.dirname(dir);
+    dir = dirname(dir);
   }
 }
 
@@ -50,14 +50,14 @@ export function findFileSync(
   results?: string[],
 ): string[] {
   if (!rootPath) {
-    rootPath = path.resolve();
+    rootPath = resolve();
   }
   if (!results) {
     results = [];
   }
   const files = fs.readdirSync(rootPath);
   for (const file of files) {
-    const filename = path.join(rootPath, file);
+    const filename = join(rootPath, file);
     const stat = fs.lstatSync(filename);
     if (stat.isDirectory()) {
       findFileSync(filePath, filename, results);
