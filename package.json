@@ -24,7 +24,6 @@
         "example": "./bin/example"
     },
     "files": [
-        "bin",
         "lib"
     ],
     "scripts": {
