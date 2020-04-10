@@ -29,13 +29,14 @@
     ],
     "scripts": {
         "reinstall": "rimraf ./package-lock.json ./node_modules && npm i",
-        "postinstall": "npm run bundle",
+        "clean": "rimraf ./lib",
         "precompile:dev": "npm run lint",
         "compile:dev": "npm run compile -- -p tsconfig.dev.json",
-        "precompile": "rimraf ./lib",
+        "precompile": "npm run clean",
         "compile": "tsc",
         "compile:w": "npm run compile -- -w",
         "lint": "eslint . --ext .ts",
+        "prebundle": "npm run clean",
         "bundle": "npx rollup -c",
         "preexample": "npm run lint && npm run compile",
         "example": "node ./bin/example"
