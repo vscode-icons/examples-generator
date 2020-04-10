@@ -7,11 +7,13 @@ export function pathUnixJoin(...paths: string[]): string {
 
 export function deleteDirectoryRecursively(dirPath: string): void {
   if (fs.existsSync(dirPath)) {
-    fs.readdirSync(dirPath).forEach(file => {
+    fs.readdirSync(dirPath).forEach((file: string) => {
       const curPath = `${dirPath}/${file}`;
-      if (fs.lstatSync(curPath).isDirectory()) { // recurse
+      if (fs.lstatSync(curPath).isDirectory()) {
+        // recurse
         deleteDirectoryRecursively(curPath);
-      } else { // delete file
+      } else {
+        // delete file
         fs.unlinkSync(curPath);
       }
     });
@@ -22,7 +24,8 @@ export function deleteDirectoryRecursively(dirPath: string): void {
 export function findDirectorySync(dirName: string): string {
   let dir = path.resolve();
   const root = path.parse(dir).root;
-  while (true) {
+  let loop = true;
+  while (loop) {
     let lookUpDir: string;
     try {
       fs.accessSync(path.resolve(dir, dirName));
@@ -31,27 +34,43 @@ export function findDirectorySync(dirName: string): string {
       lookUpDir = undefined;
     }
     if (lookUpDir) {
+      loop = false;
       return path.join(dir, lookUpDir);
     } else if (dir === root) {
+      loop = false;
       return null;
     }
     dir = path.dirname(dir);
   }
 }
 
-export function findFileSync(filePath: string | RegExp, rootPath?: string, results?: string[]): string[] {
-  if (!!!rootPath) { rootPath = path.resolve(); }
-  if (!!!results) { results = []; }
+export function findFileSync(
+  filePath: string | RegExp,
+  rootPath?: string,
+  results?: string[],
+): string[] {
+  if (!rootPath) {
+    rootPath = path.resolve();
+  }
+  if (!results) {
+    results = [];
+  }
   const files = fs.readdirSync(rootPath);
   for (const file of files) {
     const filename = path.join(rootPath, file);
     const stat = fs.lstatSync(filename);
-    if (stat.isDirectory()) { findFileSync(filePath, filename, results); }
+    if (stat.isDirectory()) {
+      findFileSync(filePath, filename, results);
+    }
     if (filePath instanceof RegExp) {
-      if (filePath.test(filename)) { results.push(filename); }
+      if (filePath.test(filename)) {
+        results.push(filename);
+      }
       continue;
     }
-    if (filename.indexOf(filePath) > -1) { results.push(filename); }
+    if (filename.includes(filePath)) {
+      results.push(filename);
+    }
   }
   return results;
 }

@@ -17,7 +17,7 @@
       // we run the custom script "build" as defined in package.json
       "args": [
         "run",
-        "compile",
+        "compile:dev",
         "--loglevel",
         "silent"
       ],

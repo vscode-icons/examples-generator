@@ -17,18 +17,21 @@
         "url": "https://github.com/vscode-icons/wpilgenerator/issues"
     },
     "engines": {
-        "node": "8.* || >=10.*"
+        "node": ">=10.*"
     },
-    "main": "./lib/examples",
+    "main": "./lib/examples.js",
     "bin": {
         "example": "./bin/example"
     },
     "scripts": {
+        "reinstall": "rimraf ./package-lock.json ./node_modules && npm i",
         "postinstall": "npm run compile",
+        "precompile:dev": "npm run lint",
+        "compile:dev": "npm run compile -- -p tsconfig.dev.json",
         "precompile": "rimraf ./lib",
         "compile": "tsc",
         "compile:w": "npm run compile -- -w",
-        "lint": "tslint --project tsconfig.json",
+        "lint": "eslint . --ext .ts",
         "preexample": "npm run lint && npm run compile",
         "example": "node ./bin/example"
     },
@@ -38,8 +41,16 @@
     "devDependencies": {
         "@types/node": "8",
         "@types/yargs": "~13.0.0",
+        "@typescript-eslint/eslint-plugin": "^2.27.0",
+        "@typescript-eslint/parser": "^2.27.0",
+        "eslint": "^6.8.0",
+        "eslint-config-prettier": "^6.10.1",
+        "eslint-plugin-import": "^2.20.2",
+        "eslint-plugin-prettier": "^3.1.2",
+        "husky": "^4.2.3",
+        "lint-staged": "^10.1.2",
+        "prettier": "^2.0.4",
         "rimraf": "^2.6.3",
-        "tslint": "^5.18.0",
         "typescript": "^3.5.3"
     }
 }

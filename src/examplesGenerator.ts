@@ -4,13 +4,17 @@ import { IParsedArgs } from './interfaces';
 import { deleteDirectoryRecursively } from './utils';
 
 export class ExamplesGenerator {
-
   private fileNames: any;
   private folderNames: any;
-  private langIdIconsCount: number = 0;
+  private langIdIconsCount = 0;
   private unsupported: string[] = [];
 
-  constructor(private pargs: IParsedArgs, private files: any, private folders: any, private logger: Logger) {
+  constructor(
+    private pargs: IParsedArgs,
+    private files: any,
+    private folders: any,
+    private logger: Logger,
+  ) {
     this.fileNames = this.getFilesCollection();
     this.folderNames = this.getFoldersCollection();
   }
@@ -21,12 +25,16 @@ export class ExamplesGenerator {
     this.logger.log('');
 
     if (this.pargs.flag === 'files') {
-      const icons = this.pargs.icons.length ? this.pargs.icons : Object.keys(this.fileNames);
+      const icons = this.pargs.icons.length
+        ? this.pargs.icons
+        : Object.keys(this.fileNames);
       this.buildFiles(icons);
     }
 
     if (this.pargs.flag === 'folders') {
-      const icons = this.pargs.icons.length ? this.pargs.icons : Object.keys(this.folderNames);
+      const icons = this.pargs.icons.length
+        ? this.pargs.icons
+        : Object.keys(this.folderNames);
       this.buildFolders(icons);
     }
 
@@ -40,31 +48,38 @@ export class ExamplesGenerator {
     process.chdir(currentDir);
   }
 
-  private displayNoteFooter() {
-    const supported = this.pargs.icons.filter(icon => this.unsupported.indexOf(icon) < 0);
+  private displayNoteFooter(): void {
+    const supported = this.pargs.icons.filter(
+      (icon: string) => !this.unsupported.includes(icon),
+    );
     let isMany = !supported.length || supported.length > 1;
     let suffix = isMany ? 's' : '';
-    const noun = this.pargs.flag !== 'all'
-      ? this.pargs.flag.substring(0, this.pargs.flag.length - 1)
-      : this.pargs.flag;
+    const noun =
+      this.pargs.flag !== 'all'
+        ? this.pargs.flag.substring(0, this.pargs.flag.length - 1)
+        : this.pargs.flag;
     let verb = isMany ? 'were' : 'was';
     const msg = this.pargs.icons.length
-      ? `${(supported.length
-        ? `'${supported.join('\', \'')}'`
-        : `zero`)} ${noun}`
+      ? `${supported.length ? `'${supported.join(`', '`)}'` : `zero`} ${noun}`
       : noun;
-    this.logger.updateLog(`Example${suffix} of ${msg} icon${suffix} ${verb} successfully created!`);
+    this.logger.updateLog(
+      `Example${suffix} of ${msg} icon${suffix} ${verb} successfully created!`,
+    );
     if (this.unsupported.length) {
       isMany = !this.unsupported.length || this.unsupported.length > 1;
       suffix = isMany ? 's' : '';
-      this.logger.error(`Unsupported icon${suffix}: '${this.unsupported.join('\', \'')}'`);
+      this.logger.error(
+        `Unsupported icon${suffix}: '${this.unsupported.join(`', '`)}'`,
+      );
     }
     if (this.langIdIconsCount > 0) {
       isMany = this.langIdIconsCount > 1;
       suffix = isMany ? 's' : '';
       verb = isMany ? 'are' : 'is';
       const langIdMsg = `
-Note: Example${suffix} include${!isMany ? 's' : ''} file icon${suffix} that ${verb} supported via 'language id'.
+Note: Example${suffix} include${
+        !isMany ? 's' : ''
+      } file icon${suffix} that ${verb} supported via 'language id'.
   In order to display that icon${suffix}, you may have to add the following snippet in your settings:
 
   "vsicons.associations.files": [
@@ -78,10 +93,11 @@ Note: Example${suffix} include${!isMany ? 's' : ''} file icon${suffix} that ${ve
 
   private getFilesCollection(): any {
     return this.files.supported
-      .filter(file => !file.disabled)
-      .reduce((init, current) => {
+      .filter((file: any) => !file.disabled)
+      .reduce((init: any, current: any) => {
         const obj = init;
-        const hasLangId = !current.filename && current.languages && current.languages.length;
+        const hasLangId =
+          !current.filename && current.languages && current.languages.length;
         const extension = hasLangId
           ? current.languages[0].defaultExtension
           : current.extensions[0];
@@ -90,7 +106,7 @@ Note: Example${suffix} include${!isMany ? 's' : ''} file icon${suffix} that ${ve
           return obj;
         }
 
-        obj[current.icon] = `${(current.filename ? '' : 'file.')}${extension}`;
+        obj[current.icon] = `${current.filename ? '' : 'file.'}${extension}`;
 
         return obj;
       }, {});
@@ -98,8 +114,8 @@ Note: Example${suffix} include${!isMany ? 's' : ''} file icon${suffix} that ${ve
 
   private getFoldersCollection(): any {
     return this.folders.supported
-      .filter(folder => !folder.disabled)
-      .reduce((init, current) => {
+      .filter((folder: any) => !folder.disabled)
+      .reduce((init: any, current: any) => {
         const obj = init;
         if (current.extensions.length) {
           obj[current.icon] = current.extensions[0];
@@ -108,14 +124,14 @@ Note: Example${suffix} include${!isMany ? 's' : ''} file icon${suffix} that ${ve
       }, {});
   }
 
-  private createDirectory(dirName: string) {
+  private createDirectory(dirName: string): void {
     deleteDirectoryRecursively(dirName);
     fs.mkdirSync(dirName);
     process.chdir(dirName);
   }
 
-  private buildFiles(icons: string[]) {
-    icons.forEach(icon => {
+  private buildFiles(icons: string[]): void {
+    icons.forEach((icon: string) => {
       const filename = this.fileNames[icon];
 
       if (!filename) {
@@ -123,22 +139,28 @@ Note: Example${suffix} include${!isMany ? 's' : ''} file icon${suffix} that ${ve
         return;
       }
 
-      const fileIcon = this.files.supported.find(file => file.icon === icon);
+      const fileIcon = this.files.supported.find(
+        (file: any) => file.icon === icon,
+      );
       if (fileIcon.languages && fileIcon.languages.length) {
         this.langIdIconsCount++;
       }
 
       try {
         fs.writeFileSync(filename, null);
-        this.logger.updateLog(`Example file for '${icon}' successfully created!`);
+        this.logger.updateLog(
+          `Example file for '${icon}' successfully created!`,
+        );
       } catch (error) {
-        this.logger.error(`Something went wrong while creating the file for '${icon}' :\n${error}`);
+        this.logger.error(
+          `Something went wrong while creating the file for '${icon}' :\n${error}`,
+        );
       }
     });
   }
 
-  private buildFolders(icons: string[]) {
-    icons.forEach(icon => {
+  private buildFolders(icons: string[]): void {
+    icons.forEach((icon: string) => {
       const foldername = this.folderNames[icon];
 
       if (!foldername) {
@@ -148,9 +170,13 @@ Note: Example${suffix} include${!isMany ? 's' : ''} file icon${suffix} that ${ve
 
       try {
         fs.mkdirSync(foldername);
-        this.logger.updateLog(`Example folder for '${icon}' successfully created!`);
+        this.logger.updateLog(
+          `Example folder for '${icon}' successfully created!`,
+        );
       } catch (error) {
-        this.logger.error(`Something went wrong while creating the folder for '${icon}' :\n${error}`);
+        this.logger.error(
+          `Something went wrong while creating the folder for '${icon}' :\n${error}`,
+        );
       }
     });
   }
