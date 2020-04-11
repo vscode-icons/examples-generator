@@ -36,7 +36,7 @@
         "compile:w": "npm run compile -- -w",
         "lint": "eslint . --ext .ts",
         "prebundle": "npm run cleanup",
-        "bundle": "npx rollup -c",
+        "bundle": "rollup -c",
         "preexample": "npm run lint && npm run compile",
         "example": "node ./bin/example"
     },
