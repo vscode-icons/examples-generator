@@ -1,4 +1,5 @@
 import builtins from 'builtin-modules';
+import { preserveShebangs } from 'rollup-plugin-preserve-shebangs';
 import { terser } from 'rollup-plugin-terser';
 import ts from '@rollup/plugin-typescript';
 import typescript from 'typescript';
@@ -6,7 +7,7 @@ import pkg from './package.json';
 
 export default [
   {
-    input: 'src/examples.ts',
+    input: 'src/cli.ts',
     output: [
       {
         file: pkg.main,
@@ -22,6 +23,7 @@ export default [
       ts({
         typescript,
       }),
+      preserveShebangs(),
       terser()
     ],
   }

@@ -1,6 +1,6 @@
 {
   "skipCI": true,
   "hooks": {
-    "pre-commit": "lint-staged && npm run bundle"
+    "pre-commit": "lint-staged && rollup -c && git add ."
   }
 }

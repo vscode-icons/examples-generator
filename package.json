@@ -19,9 +19,9 @@
     "engines": {
         "node": ">=10.*"
     },
-    "main": "./lib/examples.js",
+    "main": "lib/examples.js",
     "bin": {
-        "example": "./bin/example"
+        "example": "lib/examples.js"
     },
     "files": [
         "lib"
@@ -59,6 +59,7 @@
         "prettier": "^2.0.4",
         "rimraf": "^3.0.2",
         "rollup": "^2.6.0",
+        "rollup-plugin-preserve-shebangs": "^0.2.0",
         "rollup-plugin-terser": "^5.3.0",
         "typescript": "^3.8.3"
     }

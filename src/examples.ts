@@ -40,7 +40,8 @@ export function main(): void {
     const files = require(filesPath).extensions;
     const folders = require(foldersPath).extensions;
 
-    new ExamplesGenerator(pargs, files, folders, logger).generate();
+    const generator = new ExamplesGenerator(pargs, files, folders, logger);
+    generator.generate();
   } catch (error) {
     console.error(error.message || error);
     process.exit(1);
