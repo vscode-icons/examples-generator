@@ -1,9 +1,10 @@
-import { Logger } from './logger';
-import { YargsParser } from './yargsparser';
-import { findDirectorySync, findFileSync } from './utils';
 import { ExamplesGenerator } from './examplesGenerator';
+import { Logger } from './logger';
+import { IFileCollection, IFolderCollection } from './models/extensions';
+import { findDirectorySync, findFileSync } from './utils';
+import { YargsParser } from './yargsparser';
 
-export function main(): void {
+export async function main(): Promise<void> {
   try {
     const logger = new Logger();
     const pargs = new YargsParser(logger).parse();
@@ -37,13 +38,20 @@ export function main(): void {
       );
     }
 
-    const files = require(filesPath).extensions;
-    const folders = require(foldersPath).extensions;
+    const files: IFileCollection = ((await import(filesPath)) as Record<
+      string,
+      IFileCollection
+    >).extensions;
+    const folders: IFolderCollection = ((await import(foldersPath)) as Record<
+      string,
+      IFolderCollection
+    >).extensions;
 
     const generator = new ExamplesGenerator(pargs, files, folders, logger);
     generator.generate();
   } catch (error) {
-    console.error(error.message || error);
+    const err = error as Error;
+    console.error(err?.message || err?.stack);
     process.exit(1);
   }
 }

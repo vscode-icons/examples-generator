@@ -10,7 +10,8 @@ export default [
     input: 'src/cli.ts',
     output: [
       {
-        file: pkg.main,
+        dir: '.',
+        entryFileNames: pkg.main,
         format: 'cjs',
       }
     ],

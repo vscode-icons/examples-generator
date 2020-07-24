@@ -9,7 +9,7 @@
       "type": "node",
       "request": "launch",
       "name": "Launch",
-      "program": "${workspaceFolder}/bin/example",
+      "program": "${workspaceFolder}/lib/cli.js",
       "args": [
         "--all"
       ],

@@ -1,18 +1,24 @@
 import * as fs from 'fs';
-import { Logger } from './logger';
 import { IParsedArgs } from './interfaces';
+import { Logger } from './logger';
+import {
+  IFileCollection,
+  IFileExtension,
+  IFolderCollection,
+  IFolderExtension,
+} from './models/extensions';
 import { deleteDirectoryRecursively } from './utils';
 
 export class ExamplesGenerator {
-  private fileNames: any;
-  private folderNames: any;
+  private fileNames: IFileExtension;
+  private folderNames: IFolderExtension;
   private langIdIconsCount = 0;
   private unsupported: string[] = [];
 
   constructor(
     private pargs: IParsedArgs,
-    private files: any,
-    private folders: any,
+    private files: IFileCollection,
+    private folders: IFolderCollection,
     private logger: Logger,
   ) {
     this.fileNames = this.getFilesCollection();
@@ -91,10 +97,10 @@ Note: Example${suffix} include${
     }
   }
 
-  private getFilesCollection(): any {
+  private getFilesCollection(): IFileExtension {
     return this.files.supported
-      .filter((file: any) => !file.disabled)
-      .reduce((init: any, current: any) => {
+      .filter((file: IFileExtension) => !file.disabled)
+      .reduce((init: IFileExtension, current: IFileExtension) => {
         const obj = init;
         const hasLangId =
           !current.filename && current.languages && current.languages.length;
@@ -109,19 +115,19 @@ Note: Example${suffix} include${
         obj[current.icon] = `${current.filename ? '' : 'file.'}${extension}`;
 
         return obj;
-      }, {});
+      }, {} as IFileExtension);
   }
 
-  private getFoldersCollection(): any {
+  private getFoldersCollection(): IFolderExtension {
     return this.folders.supported
-      .filter((folder: any) => !folder.disabled)
-      .reduce((init: any, current: any) => {
+      .filter((folder: IFolderExtension) => !folder.disabled)
+      .reduce((init: IFolderExtension, current: IFolderExtension) => {
         const obj = init;
         if (current.extensions.length) {
           obj[current.icon] = current.extensions[0];
         }
         return obj;
-      }, {});
+      }, {} as IFolderExtension);
   }
 
   private createDirectory(dirName: string): void {
@@ -132,7 +138,7 @@ Note: Example${suffix} include${
 
   private buildFiles(icons: string[]): void {
     icons.forEach((icon: string) => {
-      const filename = this.fileNames[icon];
+      const filename = this.fileNames[icon] as string;
 
       if (!filename) {
         this.unsupported.push(icon);
@@ -140,7 +146,7 @@ Note: Example${suffix} include${
       }
 
       const fileIcon = this.files.supported.find(
-        (file: any) => file.icon === icon,
+        (file: IFileExtension) => file.icon === icon,
       );
       if (fileIcon.languages && fileIcon.languages.length) {
         this.langIdIconsCount++;
@@ -152,8 +158,11 @@ Note: Example${suffix} include${
           `Example file for '${icon}' successfully created!`,
         );
       } catch (error) {
+        const err = error as Error;
         this.logger.error(
-          `Something went wrong while creating the file for '${icon}' :\n${error}`,
+          `Something went wrong while creating the file for '${icon}' :\n${
+            err?.stack || err?.message
+          }`,
         );
       }
     });
@@ -161,7 +170,7 @@ Note: Example${suffix} include${
 
   private buildFolders(icons: string[]): void {
     icons.forEach((icon: string) => {
-      const foldername = this.folderNames[icon];
+      const foldername = this.folderNames[icon] as string;
 
       if (!foldername) {
         this.unsupported.push(icon);
@@ -174,8 +183,11 @@ Note: Example${suffix} include${
           `Example folder for '${icon}' successfully created!`,
         );
       } catch (error) {
+        const err = error as Error;
         this.logger.error(
-          `Something went wrong while creating the folder for '${icon}' :\n${error}`,
+          `Something went wrong while creating the folder for '${icon}' :\n${
+            err?.stack || err?.message
+          }`,
         );
       }
     });
